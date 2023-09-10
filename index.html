@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Math Game</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+</head>
+<body onload="generateQuestion(), onCheck()"> 
+    <div class="container-fluid d-flex justify-content-center">
+        <center class="border rounded mt-5" style="width: 50%">
+            <h1>เกมคณิตศาสตร์</h1>
+    
+        <p>เลือกจำนวนข้อ</p>
+        <select id="choiceselector">
+            <option value="10">10ข้อ</option>
+            <option value="20">20ข้อ</option>
+            <option value="30">30ข้อ</option>
+        </select>
+    
+        <button onclick="onCheck()">ยืนยัน</button>
+    
+        <p style="font-size: 30px;" id="question"></p>
+        
+        <p>คำตอบ: <input type="number" step="any" id="userAnswer"><button onclick="checkAnswer()" class="btn btn-success">ส่งคำตอบ</button></p> 
+        
+       
+    
+        <button id = "startstop" onclick="timecounter()" class="btn btn-primary">จับเวลา</button>
+    
+        <button id = "reset" onclick="reset()" class="btn btn-warning">รีเซ็ท</button> 
+        
+        <p id="result"></p>
+        <p id="score">คะแนน: 0</p>
+        
+        <input type="hidden" id="correctAnswer">
+    
+        <p id="time">Time</p>
+        </center>
+    </div>
+ 
+    <script>
+        var score = 0;
+        var seconds = 0;
+        var minutes = 0;
+        var isrunning = false;
+        var timer;
+        var choicemax = 10;
+        var choicenum = 1;
+        function onCheck(){
+            choicenum = 1;
+            choicemax = document.querySelector('#choiceselector').value;
+        }
+
+        function generateQuestion() {
+            if(choicenum <= choicemax)
+            {
+                var num1 = Math.floor(Math.random() * 10) + 1;
+                var num2 = Math.floor(Math.random() * 10) + 1;
+                var ope = ['+','-','*','/']
+                var question = num1 + " " + ope[Math.floor(Math.random() * ope.length)] + " " + num2;
+                document.getElementById("question").innerText = question;
+            }
+            else{
+                alert(document.querySelector('#score').innerHTML);
+                isrunning = true;
+            }   
+        }
+
+        function checkAnswer() {
+            var userAnswer = parseFloat(document.getElementById("userAnswer").value);
+            var correctAnswer = document.getElementById("question").innerText;
+
+            if (userAnswer === eval(correctAnswer)) {
+                score++;
+                choicenum++;
+                document.getElementById("result").innerHTML = "ถูกต้อง";
+                document.getElementById("score").innerHTML = "คะแนน: " + score;
+            } else {
+                document.getElementById("result").innerHTML = "คำตอบไม่ถูกต้อง";
+                choicenum++;
+            }
+            generateQuestion();
+        }
+
+        function timecounter() {
+            if (isrunning) {
+                clearInterval(timer);
+                document.getElementById("startstop").textContent = "จับเวลา";
+            } else {
+                timer = setInterval(counter, 1000);
+                document.getElementById("startstop").textContent = "หยุด";
+            }
+        isrunning = !isrunning;
+        }
+
+        function counter() {
+            seconds++;
+            if (seconds === 60) {
+                seconds = 0;
+                minutes++;
+            }
+            const timeString = pad(minutes)+':'+pad(seconds);
+            document.getElementById("time").innerText = "Time " + timeString;
+        }
+
+        function pad(number) {
+                return number.toString().padStart(2, '0');
+        }
+        
+        function reset(){
+                choicenum = 1;
+                seconds = 0;
+                minutes = 0;
+                score = 0;
+                const timeString = pad(minutes)+':'+pad(seconds);
+                document.getElementById("time").innerText = "Time " + timeString;
+                document.querySelector("#score").innerText = "คะแนน: " + score;         
+        }
+        
+    </script>
+    
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+</body>
+</html>
